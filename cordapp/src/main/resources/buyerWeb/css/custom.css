@@ -1,0 +1,29 @@
+/* BOOTSTRAP OVERRIDE*/
+
+/** Header and footer **/
+.table-borderless th,
+.table-borderless tbody,
+.table-borderless tr,
+.table-borderless td {
+    border: 0;
+    padding: 0;
+}
+
+.table tbody>tr>td.vert-align{
+    vertical-align: middle;
+}
+
+td.bold{
+  font-weight: bold;
+  padding-left: 130px; !important
+}
+
+[hidden] {
+  display: none !important;
+}
+
+#table-message {
+    padding-top: 5px;
+}
+
+body { background: #FFD1D1 !important; }

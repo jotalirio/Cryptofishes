@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<link>
+<head>
+    <meta charset="UTF-8">
+    <title>Regulatory Body</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.0-rc.1/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.2.0/ui-bootstrap-tpls.min.js"></script>
+    <script src="js/angular-module.js"></script>
+</head>
+<body ng-app="demoAppModule" ng-controller="DemoAppController as demoApp">
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">{{demoApp.thisNode}}</a>
+        </div>
+        <button ng-click="demoApp.openCreateModal()" type="button" class="btn btn-primary navbar-btn">New CryptoFishy
+        </button>
+        <button ng-click="demoApp.refresh()" type="button" class="btn btn-default navbar-btn"><span
+                class="glyphicon glyphicon-refresh"></span></button>
+    </div>
+</nav>
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+        <div ng-show="!demoApp.cryptofishies.length" class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">CryptoFishies to Issue</h3>
+            </div>
+            <div class="panel-body">There are no recorded CryptoFishies.</div>
+        </div>
+        <div ng-show="demoApp.cryptofishies.length" class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">CryptoFishies to Issue</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table text-center">
+                    <thead>
+                    <tr>
+                        <th class="text-center">Expedition Year</th>
+                        <th class="text-center">Fish Type</th>
+                        <th class="text-center">Location</th>
+                        <th class="text-center">Quantity</th>
+                        <th class="text-center">Fished</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="cryptofishy in demoApp.cryptofishies">
+                        <td class="vert-align">{{cryptofishy.year}}</td>
+                        <td class="vert-align">{{cryptofishy.type}}</td>
+                        <td class="vert-align">{{cryptofishy.location}}</td>
+                        <td class="vert-align">{{cryptofishy.quantity}}</td>
+                        <td ng-if="!cryptofishy.fished" class="vert-align">No</td>
+                        <td ng-if="cryptofishy.fished" class="vert-align">Yes</td>
+                        <td>
+                            <button ng-click="demoApp.openTransferModal(cryptofishy.linearId.id)" type="button"
+                                    class="btn btn-primary">Issue to Fisherman
+                            </button>
+                            <button ng-click="demoApp.showCertificateInfo(cryptofishy.linearId.id)" type="button"
+                                    class="btn btn-primary">Download Certificate PDF
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1"></div>
+</div>
+<script type="text/ng-template" id="demoAppModal.html">
+    <div class="modal-header">
+        <h4 class="modal-title">Issue CryptoFishy</h4>
+    </div>
+    <form>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="fisherman" class="control-label">Fishermen:</label>
+                <select ng-model="modalInstance.form.fisherman" class="form-control" id="fisherman"
+                        ng-options="fisherman as fisherman for fisherman in modalInstance.fishermen">
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="type" class="control-label">Type (String):</label>
+                <input type="text" ng-model="modalInstance.form.type" class="form-control" id="type">
+            </div>
+            <div class="form-group">
+                <label for="location" class="control-label">Location (String):</label>
+                <input type="text" ng-model="modalInstance.form.location" class="form-control" id="location">
+            </div>
+            <div class="form-group">
+                <label for="quantity" class="control-label">Quantity (Integer):</label>
+                <input type="text" ng-model="modalInstance.form.quantity" class="form-control" id="quantity">
+            </div>
+            <div ng-show="modalInstance.formError" class="form-group">
+                <div class="alert alert-danger" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <span class="sr-only">Error:</span>
+                    Enter valid parameters
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button ng-click="modalInstance.cancel()" type="button" class="btn btn-default">Close</button>
+            <button ng-click="modalInstance.issue()" type="button" class="btn btn-primary">Issue</button>
+        </div>
+    </form>
+</script>
+<script type="text/ng-template" id="createModal.html">
+    <div class="modal-header">
+        <h4 class="modal-title">New CryptoFishy</h4>
+    </div>
+    <form>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="type" class="control-label">Type (String):</label>
+                <input type="text" ng-model="modalInstance.form.type" class="form-control" id="type">
+            </div>
+            <div class="form-group">
+                <label for="location" class="control-label">Location (String):</label>
+                <input type="text" ng-model="modalInstance.form.location" class="form-control" id="location">
+            </div>
+            <div class="form-group">
+                <label for="quantity" class="control-label">Quantity (Integer):</label>
+                <input type="text" ng-model="modalInstance.form.quantity" class="form-control" id="quantity">
+            </div>
+            <div ng-show="modalInstance.formError" class="form-group">
+                <div class="alert alert-danger" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <span class="sr-only">Error:</span>
+                    Enter valid parameters to Create the CryptoFishy
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button ng-click="modalInstance.cancel()" type="button" class="btn btn-default">Close</button>
+            <button ng-click="modalInstance.create()" type="button" class="btn btn-primary">Create</button>
+        </div>
+    </form>
+</script>
+<script type="text/ng-template" id="transferModal.html">
+    <div class="modal-header">
+        <h4 class="modal-title">Issue CryptoFishy</h4>
+    </div>
+    <form>
+        <div class="modal-body">
+            <label for="fisherman" class="control-label">Fisherman:</label>
+            <select ng-model="transferModalInstance.form.fisherman" class="form-control" id="fisherman"
+                    ng-options="fisherman as fisherman for fisherman in transferModalInstance.fishermen">
+            </select>
+        </div>
+        <div ng-show="transferModalInstance.formError" class="form-group">
+            <div class="alert alert-danger" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error:</span>
+                Enter valid parameters for Transfer the CryptoFishy
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button ng-click="transferModalInstance.cancel()" type="button" class="btn btn-default">Close</button>
+            <button ng-click="transferModalInstance.transfer()" type="button" class="btn btn-primary">Issue</button>
+        </div>
+    </form>
+</script>
+<script type="text/ng-template" id="messageContent.html">
+    <div class="modal-body" id="modal-body">
+        {{ modalInstanceTwo.message }}
+    </div>
+</script>
+
+</body>
+</html>
